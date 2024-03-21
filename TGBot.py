@@ -25,10 +25,10 @@ def get_audio_messages(message):
         # Ниже пытаемся вычленить имя файла, да и вообще берем данные с мессаги
         file_info = bot.get_file(message.voice.file_id)
         path = file_info.file_path # Вот тут-то и полный путь до файла (например: voice/file_2.oga)
-        fname = os.path.basename(path) # Преобразуем путь в имя файла (например: file_2.oga)
+        #fname = os.path.basename(path) # Преобразуем путь в имя файла (например: file_2.oga)
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(config.token, file_info.file_path))# Получаем и сохраняем присланную голосвуху
         model = whisper.load_model('small')
-        result = model.transcribe('audio_6.ogg') # добавляем аудио для обработки
+        result = model.transcribe(doc) # добавляем аудио для обработки
         #print(result('text'))
         bot.send_message(message.from_user.id, "Finish recognition...")
         bot.send_message(message.from_user.id, result('text'))
