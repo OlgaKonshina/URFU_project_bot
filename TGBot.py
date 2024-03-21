@@ -2,6 +2,7 @@ import telebot
 import whisper
 import os
 import requests
+import subprocess
 #from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 import TGBot_config as config
 import pytz
@@ -24,11 +25,17 @@ def get_audio_messages(message):
         bot.send_message(message.from_user.id, "Continue recognition...")
         # Ниже пытаемся вычленить имя файла, да и вообще берем данные с мессаги
         file_info = bot.get_file(message.voice.file_id)
+        print('file_info = ',file_info)
         path = file_info.file_path # Вот тут-то и полный путь до файла (например: voice/file_2.oga)
-        #fname = os.path.basename(path) # Преобразуем путь в имя файла (например: file_2.oga)
+        fname = os.path.basename(path) # Преобразуем путь в имя файла (например: file_2.oga)
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(config.token, file_info.file_path))# Получаем и сохраняем присланную голосвуху
+        with open(fname+'.oga', 'wb') as f:
+            f.write(doc.content) # вот именно тут и сохраняется сама аудио-мессага
+        subprocess.run(['ffmpeg', '-i', fname+'.oga', fname+'.wav'])
         model = whisper.load_model('small')
-        result = model.transcribe(doc) # добавляем аудио для обработки
+        #print('model = ', model)
+        bot.send_message(message.from_user.id, 'Загрузили модель')
+        result = model.transcribe(fname+'.wav',fp16=false) # добавляем аудио для обработки
         #print(result('text'))
         bot.send_message(message.from_user.id, "Finish recognition...")
         bot.send_message(message.from_user.id, result('text'))
