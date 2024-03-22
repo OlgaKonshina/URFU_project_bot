@@ -26,6 +26,7 @@ def get_audio_messages(message):
         print('file_info = ',file_info)
         path = file_info.file_path # Вот тут-то и полный путь до файла (например: voice/file_2.oga)
         fname = os.path.basename(path) # Преобразуем путь в имя файла (например: file_2.oga)
+        print(fname)
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(config.token, file_info.file_path))# Получаем и сохраняем присланную голосвуху
         with open(fname+'.oga', 'wb') as f:
             f.write(doc.content) # вот именно тут и сохраняется сама аудио-мессага
@@ -40,8 +41,9 @@ def get_audio_messages(message):
     except Exception as e:
         bot.send_message(message.from_user.id,  "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... \nДа ладно, никто эту ошибку исправлять не будет, она просто потеряется в логах.")
     finally:
-        os.remove(fname + '.oga')
-        os.remove(fname + '.wav')
+        #os.remove(fname + '.oga')
+        #os.remove(fname + '.wav')
+        pass
 @bot.message_handler(commands=['help'])
 def help_command(message):
     bot.send_message(message.from_user.id, "Это модель распознования голосовых сообщений")
