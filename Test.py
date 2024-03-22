@@ -13,6 +13,7 @@ import pytz
 bot = telebot.TeleBot(config.token);
 p_timezone = pytz.timezone(config.timezone)
 timezone_common_name = config.timezone_common_name
+print(config.token)
 
 # def audio_to_text(dest_name: str):
 #     model = whisper.load_model('small')
