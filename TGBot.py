@@ -17,7 +17,7 @@ timezone_common_name = config['timezone_common_name']
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!')
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение! \nHi ✌️, send me a voice message!')
 
 @bot.message_handler(content_types=['voice'])
 def get_audio_messages(message):
