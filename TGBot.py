@@ -42,8 +42,8 @@ def get_audio_messages(message):
     except Exception as e:
         bot.send_message(message.from_user.id,  "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... \nДа ладно, никто эту ошибку исправлять не будет, она просто потеряется в логах.")
     finally:
-        os.remove(fname + '.ogg')
         os.remove(fname + '.oga')
+        os.remove(fname + '.wav')
 @bot.message_handler(commands=['help'])
 def help_command(message):
     bot.send_message(message.from_user.id, "Это модель распознования голосовых сообщений")
