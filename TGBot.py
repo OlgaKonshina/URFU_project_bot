@@ -4,13 +4,19 @@ import os
 import requests
 import subprocess
 #from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-import TGBot_config as config
+#import TGBot_config as config
 import pytz
 #from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton #Инлайн кнопки
 
-bot = telebot.TeleBot(config.token);
-p_timezone = pytz.timezone(config.timezone)
-timezone_common_name = config.timezone_common_name
+import yaml
+
+with open(r'TGBot_config.yaml', 'r', encoding='utf8') as f:
+    config = yaml.safe_load(f)
+
+
+bot = telebot.TeleBot(config['token'])
+p_timezone = pytz.timezone(config['timezone'])
+timezone_common_name = config['timezone_common_name']
 
 # def audio_to_text(dest_name: str):
 #     model = whisper.load_model('small')
