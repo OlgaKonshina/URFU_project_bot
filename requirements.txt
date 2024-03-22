@@ -1,2 +1,7 @@
 openai-whisper
 ffmpeg
+telebot
+os
+requests
+subprocess
+pytz
