@@ -15,6 +15,10 @@ p_timezone = pytz.timezone(config['timezone'])
 timezone_common_name = config['timezone_common_name']
 
 
+@bot.message_handler(commands=['start'])
+def start_message(message):
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!')
+
 @bot.message_handler(content_types=['voice'])
 def get_audio_messages(message):
     bot.send_message(message.from_user.id, "Started recognition...")
@@ -50,4 +54,3 @@ def help_command(message):
 
 
 bot.polling(none_stop=True, interval=0)
-
