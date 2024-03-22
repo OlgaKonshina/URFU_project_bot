@@ -31,14 +31,14 @@ def get_audio_messages(message):
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(config.token, file_info.file_path))# Получаем и сохраняем присланную голосвуху
         with open(fname+'.oga', 'wb') as f:
             f.write(doc.content) # вот именно тут и сохраняется сама аудио-мессага
-        subprocess.run(['ffmpeg', '-i', fname+'.oga', fname+'.ogg'])
+        subprocess.run(['ffmpeg', '-i', fname+'.oga', fname+'.wav'])
         model = whisper.load_model('small')
         #print('model = ', model)
         bot.send_message(message.from_user.id, 'Загрузили модель')
-        result = model.transcribe(fname+'.ogg', fp16=false) # добавляем аудио для обработки
+        result = model.transcribe(fname+'.wav', fp16 = False) # добавляем аудио для обработки
         #print(result('text'))
         bot.send_message(message.from_user.id, "Finish recognition...")
-        bot.send_message(message.from_user.id, result('text'))
+        bot.send_message(message.from_user.id, result['text'])
     except Exception as e:
         bot.send_message(message.from_user.id,  "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... \nДа ладно, никто эту ошибку исправлять не будет, она просто потеряется в логах.")
     finally:
