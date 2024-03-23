@@ -17,14 +17,16 @@ timezone_common_name = config['timezone_common_name']
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!\nHi ✌️, send me a voice message!')
+
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение! \nHi ✌️, send me a voice message!')
+ 
 
 @bot.message_handler(content_types=['voice'])
 def get_audio_messages(message):
     bot.send_message(message.from_user.id, "Started recognition...")
 # Основная функция, принимает голосовое сообщение от пользователя
     try:
-        bot.send_message(message.from_user.id, "Continue recognition...")
+        #bot.send_message(message.from_user.id, "Continue recognition...")
         # Ниже пытаемся вычленить имя файла, да и вообще берем данные с мессаги
         file_info = bot.get_file(message.voice.file_id)
         print('file_info = ',file_info)
@@ -37,7 +39,7 @@ def get_audio_messages(message):
         subprocess.run(['ffmpeg', '-i', fname+'.oga', fname+'.wav'])
         model = whisper.load_model('small')
         #print('model = ', model)
-        bot.send_message(message.from_user.id, 'Загрузили модель')
+        bot.send_message(message.from_user.id, 'VoiceModel is loaded')
         result = model.transcribe(fname+'.wav', fp16 = False) # добавляем аудио для обработки
         #print(result('text'))
         bot.send_message(message.from_user.id, "Finish recognition...")
