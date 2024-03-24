@@ -1,8 +1,8 @@
 token:
- '7104169014:AAGiZEwf7EXxQMToUHm8fLEX5Tvhb-UXv7g'  # заменить на токен своего бота
+ 'ТОKEN'  # заменить на токен своего бота
 
 user_id:
-  '@UrfuProjectPiBot'
+  'user_id'
 
 timezone:
   'Europe/Moscow'
