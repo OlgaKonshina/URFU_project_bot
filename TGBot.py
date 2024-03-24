@@ -40,7 +40,7 @@ def get_audio_messages(message):
         fname = os.path.basename(path)  # Преобразуем путь в имя файла (например: file_2.oga)
         # print(fname)
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(token,
-                                                                             file_info.file_path))  # Получаем и сохраняем присланную голосвуху
+                                                                             file_info.file_path))  # Получаем и сохраняем присланную голосовуху
         with open(fname + '.oga', 'wb') as f:
             f.write(doc.content)  # вот именно тут и сохраняется сама аудио-мессага
         subprocess.run(['ffmpeg', '-i', fname + '.oga', fname + '.wav'])
