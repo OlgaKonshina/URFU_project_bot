@@ -57,7 +57,7 @@ def get_audio_messages(message):
 
     except Exception as e:
         bot.send_message(message.from_user.id,
-                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣 \nSomething went wrong, but our brave engineers are already working on a solution... 😣")
+                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \nSomething went wrong, but our brave engineers are already working on a solution... 😣")
     finally:
         os.remove(fname + '.oga')
         os.remove(fname + '.wav')
