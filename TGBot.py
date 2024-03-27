@@ -1,171 +1,68 @@
-import telebot;
-#from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-import TGBot_config as config
+import telebot
+import whisper
+import os
+import requests
+import subprocess
 import pytz
-#from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton #Инлайн кнопки
+import yaml
 
-bot = telebot.TeleBot(config.token);
-p_timezone = pytz.timezone(config.timezone)
-timezone_common_name = config.timezone_common_name
+with open(r'TGBot_config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
 
+token = config['token']
+bot = telebot.TeleBot(token)
+p_timezone = pytz.timezone(config['timezone'])
+timezone_common_name = config['timezone_common_name']
 
-@bot.message_handler(commands=['help'])
-def help_command(message):
-    keyboard = telebot.types.InlineKeyboardMarkup()
-    keyboard.add(
-        telebot.types.InlineKeyboardButton(
-            'Message the developer', url='telegram.me/DS_Shabanov'
-  )
-    )
-    bot.send_message(
-        message.chat.id,
-        '1) To receive a list of available currencies press /exchange.\n' +
-        '2) Click on the currency you are interested in.\n' +
-        '3) You will receive a message containing information regarding the source and the target currencies, ' +
-        'buying rates and selling rates.\n' +
-        '4) Click “Update” to receive the current information regarding the request. ' +
-        'The bot will also show the difference between the previous and the current exchange rates.\n' +
-        '5) The bot supports inline. Type @<botusername> in any chat and the first letters of a currency.',
-        reply_markup=keyboard
-    )
-
-#Инлайн кнопки
-#InlineKeyboardMarkup пригодится для инициализации инлайн-кнопок, а InlineKeyboardButton — для их создания.
 
 @bot.message_handler(commands=['start'])
-def start_command(message):
+def start_message(message):
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!\nHi ✌️, send me a voice message!')
+
+
+@bot.message_handler(
+    content_types=['audio', 'photo', 'video', 'video_note','document', 'text', 'location', 'contact', 'sticker'])
+def exceptions(message):
     bot.send_message(message.from_user.id,
-                     "Это Бот - помощник по математике. Используй команды, чтобы получить нужную помощь.")
-    keyboard = telebot.types.InlineKeyboardMarkup()
-    keyboard.row(
-        telebot.types.InlineKeyboardButton('Таблица умножения', callback_data='get-table')
-    )
-    keyboard.row(
-        telebot.types.InlineKeyboardButton('Решение уравнений', callback_data='get-equals')
-    )
-    bot.send_message(
-        message.chat.id,
-        'Выберете что вам нужно:',
-        reply_markup=keyboard
-    )
+                     "Я понимаю только голосовые собщения!😳  \n I only understand voice messages!😳")
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_inline(call):
-    # Если сообщение из чата с ботом
-    if call.message:
-        if call.data == "get-table":
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Посчитаем произведение 2-х чисел")
-            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                  text="Введите 1-й множитель:")
 
-            bot.register_next_step_handler(call.message, table_multiply_num1)
-
-            # bot.send_message(chat_id=call.message.chat.id, text="Введите первый множитель:")
-            # a1 = int(call.message.text)
-            # bot.send_message(chat_id=call.message.chat.id, text="Введите второй множитель:")
-            # a2 = int(call.message.text)
-            # a3 = str('Произведение чисел: ', a1, ' * ', a2, ' = ', a1 * a2)
-            # bot.send_message(chat_id=call.message.chat.id, text = a3 )
-    # Если сообщение из инлайн-режима
-    #elif call.inline_message_id:
-        if call.data == "get-equals":
-            bot.edit_message_text(inline_message_id=call.inline_message_id, text="Решим уравнение")
-
-@bot.message_handler(content_types=['text'])
-def table_multiply_num1 (message):
-    global num1
-    num1 = message.text
-    bot.send_message(chat_id=message.chat.id, text="Введите 2-й множитель:")
-    bot.register_next_step_handler(message, table_multiply_num2)
-
-def table_multiply_num2(message):
-    global num2
-    num2 = message.text
-    num_multiply = float(num1) * float(num2)
-    num_multiply_str = 'Произведение этих чисел = ' + str(num_multiply)
-    bot.send_message(chat_id=message.chat.id, text=num_multiply_str)
+@bot.message_handler(content_types=['voice'])
+def get_audio_messages(message):
+    bot.send_message(message.from_user.id, "Started recognition...")
+    # Основная функция, принимает голосовое сообщение от пользователя
+    try:
+        bot.send_message(message.from_user.id, "Continue recognition...")
+        # Ниже пытаемся вычленить имя файла, да и вообще берем данные с мессаги
+        file_info = bot.get_file(message.voice.file_id)
+        print('file_info = ', file_info)
+        path = file_info.file_path  # Вот тут-то и полный путь до файла (например: voice/file_2.oga)
+        fname = os.path.basename(path)  # Преобразуем путь в имя файла (например: file_2.oga)
+        # print(fname)
+        doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(token,
+                                                                             file_info.file_path))  # Получаем и сохраняем присланную голосвуху
+        with open(fname + '.oga', 'wb') as f:
+            f.write(doc.content)  # вот именно тут и сохраняется сама аудио-мессага
+        subprocess.run(['ffmpeg', '-i', fname + '.oga', fname + '.wav'])
+        model = whisper.load_model('small')
+        # print('model = ', model)
+        bot.send_message(message.from_user.id, 'Загрузили модель\nLoaded the model')
+        result = model.transcribe(fname + '.wav', fp16=False)  # добавляем аудио для обработки
+        # print(result('text'))
+        bot.send_message(message.from_user.id, "Finish recognition...")
+        bot.send_message(message.from_user.id, result['text'])
 
 
 
 
+    except Exception as e:
+        bot.send_message(message.from_user.id,
+                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣 \nSomething went wrong, but our brave engineers are already working on a solution... 😣")
+    finally:
+        os.remove(fname + '.oga')
+        os.remove(fname + '.wav')
+        pass
 
 
-# def iq_callback(query):
-#     data = query.data
-#     #print(data.startswith)
-#     if data.startswith('get-table'):
-#         print(data.startswith('get-table'))
-#         #get_menu_callback(query)
-#
-#         query.answer()
-#         query.edit_message_text(text="See you next time!")
-
-
-# @bot.message_handler(content_types=['text'])
-# def table_pifagore(message):
-#     print('Таблица Пифагора')
-#     #bot.send_message(message.from_user.id, "Введите первый множитель:")
-#     bot.send_message(chat_id=message.from_user.id, text='USP-Python has started up!')
-#
-
-
-# def get_menu_callback(query):
-#     bot.answer_callback_query(query.id)
-#     bot.send_message(query.message, 'Получили - ')
-#     #send_exchange_result(query.message, query.data[4:])
-#
-# def send_result(message):
-#     bot.send_message(message.chat.id, 'Получили - ')
-
-# def get_ex_callback(query):
-#     bot.answer_callback_query(query.id)
-#     send_exchange_result(query.message, query.data[4:])
-
-# def send_exchange_result(message, ex_code):
-#     bot.send_chat_action(message.chat.id, 'typing')
-#     ex = pb.get_exchange(ex_code)
-#     bot.send_message(
-#         message.chat.id, serialize_ex(ex),
-#         reply_markup=get_update_keyboard(ex),
-# 	parse_mode='HTML'
-#     )
-
-
-#
-# name = ''
-# surname = ''
-# age = 0
-# @bot.message_handler(content_types=['text'])
-# def start(message):
-#     if message.text == '/reg':
-#         bot.send_message(message.from_user.id, "Как тебя зовут?")
-#         bot.register_next_step_handler(message, get_name) #следующий шаг – функция get_name
-#     else:
-#         bot.send_message(message.from_user.id, 'Напиши /reg')
-#
-# def get_name(message): #получаем фамилию
-#     global name
-#     name = message.text
-#     bot.send_message(message.from_user.id, 'Какая у тебя фамилия?')
-#     bot.register_next_step_handler(message, get_surname)
-#
-# def get_surname(message):
-#     global surname
-#     surname = message.text
-#     bot.send_message(message.from_user.id, 'Сколько тебе лет?')
-#     bot.register_next_step_handler(message, get_age)
-#
-# def get_age(message):
-#     global age
-#     while age == 0: #проверяем что возраст изменился
-#         try:
-#              age = int(message.text) #проверяем, что возраст введен корректно
-#         except Exception:
-#              bot.send_message(message.from_user.id, 'Цифрами, пожалуйста')
-#     bot.send_message(message.from_user.id, 'Тебе '+str(age)+' лет, тебя зовут '+name+' '+surname+'?')
-
-
-
-
-bot.polling(none_stop=True, interval=2)
+bot.polling(none_stop=True, interval=0)
 

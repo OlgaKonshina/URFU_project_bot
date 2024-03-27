@@ -1,0 +1,11 @@
+token:
+ 'ТОKEN'  # заменить на токен своего бота
+
+user_id:
+  'user_id'
+
+timezone:
+  'Europe/Moscow'
+
+timezone_common_name:
+  'Moscow'
