@@ -20,11 +20,16 @@ def start_message(message):
     bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!\nHi ✌️, send me a voice message!')
 
 
+@bot.message_handler(commands=['help'])
+def help_message(message):
+    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения в текст\nБот создан в учебных целях\nThis bot translates voice messages into text\nThe bot was created for educational purposes.')
+
+
 @bot.message_handler(
     content_types=['audio', 'photo', 'video', 'video_note','document', 'text', 'location', 'contact', 'sticker'])
 def exceptions(message):
     bot.send_message(message.from_user.id,
-                     "Я понимаю только голосовые собщения!😳  \n I only understand voice messages!😳")
+                     "Ничего не понятно, но очень интересно!😳 Попробуйте команду /help\nNothing is clear, but it is very interesting!😳 Try the /help command😳")
 
 
 @bot.message_handler(content_types=['voice'])
