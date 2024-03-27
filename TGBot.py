@@ -22,14 +22,14 @@ def start_message(message):
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения в текст\nБот создан в учебных целях\nThis bot translates voice messages into text\nThe bot was created for educational purposes.')
+    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения в текст\nБот создан в учебных целях\n\nThis bot translates voice messages into text\nThe bot was created for educational purposes.')
 
 
 @bot.message_handler(
     content_types=['audio', 'photo', 'video', 'video_note','document', 'text', 'location', 'contact', 'sticker'])
 def exceptions(message):
     bot.send_message(message.from_user.id,
-                     "Ничего не понятно, но очень интересно!😳 Попробуйте команду /help\nNothing is clear, but it is very interesting!😳 Try the /help command😳")
+                     "Ничего не понятно, но очень интересно!😳\nПопробуйте команду /help\n\nNothing is clear, but it is very interesting!😳 \nTry the /help command😳")
 
 
 @bot.message_handler(content_types=['voice'])
