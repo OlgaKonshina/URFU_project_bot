@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2d276ecd-a0fa-433d-978f-f849246d28f2" name="Changes" comment="Commit 1. Pre-version&amp; Its necessary to create bot in TG and fill config.py">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="2d276ecd-a0fa-433d-978f-f849246d28f2" name="Changes" comment="Commit 3. Added menu and possibilities to choose language">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,10 +15,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="model" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -123,7 +124,21 @@
       <option name="project" value="LOCAL" />
       <updated>1710959932594</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Commit 1. Pre-version&amp; Its necessary to create bot in TG and fill config.py">
+      <created>1712778324318</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1712778324318</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Commit 3. Added menu and possibilities to choose language">
+      <created>1712778364164</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1712778364164</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -137,7 +152,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="main" />
+                        <option value="origin/Interface_language" />
                       </list>
                     </value>
                   </entry>
@@ -153,6 +168,11 @@
         <entry key="Branch">
           <value>
             <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/Interface_language" />
+                </option>
+              </RecentGroup>
               <RecentGroup>
                 <option name="FILTER_VALUES">
                   <option value="origin/secondary" />
@@ -176,6 +196,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Commit 1. Pre-version&amp; Its necessary to create bot in TG and fill config.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="Commit 1. Pre-version&amp; Its necessary to create bot in TG and fill config.py" />
+    <MESSAGE value="Commit 3. Added menu and possibilities to choose language" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit 3. Added menu and possibilities to choose language" />
   </component>
 </project>
