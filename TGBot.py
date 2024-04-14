@@ -17,14 +17,17 @@ timezone_common_name = config['timezone_common_name']
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение или видеосообщение в кружке!\nHi ✌️, send me a voice message or video-note!')
 
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио/видео сообщение!\n'
+                                      'Hi ✌️, send me a voice/video message!')
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения или видео сообщения в кружке в текст\nБот создан в учебных '
-                                      'целях\n\nThis bot translates voice messages or video-note into text\nThe bot was created for'
-                                      ' educational purposes.')
+
+    bot.send_message(message.chat.id, 'Этот бот переводит голосовые/видео сообщения в текст\n'
+                                      'Бот создан в учебных целях\n\n'
+                                      'This bot translates voice/video messages into text\n'
+                                      'The bot was created for educational purposes')
 
 
 @bot.message_handler(commands=['model'])
@@ -66,36 +69,73 @@ def callback_inline(call):
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Я не знаю такой язык")
 
 @bot.message_handler(
-    content_types=['audio', 'photo', 'video', 'document', 'text', 'location', 'contact', 'sticker'])
+
+    content_types=['audio', 'photo', 'document', 'text', 'location', 'contact', 'sticker'])
 def exceptions(message):
     bot.send_message(message.from_user.id,
-                     "Ничего не понятно, но очень интересно!😳\nПопробуйте команду /help\n\nNothing is clear, "
-                     "but it is very interesting!😳 \nTry the /help command😳")
+                     "Ничего не понятно, но очень интересно!😳\nПопробуйте команду /help😳\n\n"
+                     "Nothing is clear, but it is very interesting!😳 \nTry the /help command😳")
 
 
-@bot.message_handler(content_types=['voice', 'video_note'])
+@bot.message_handler(content_types=['voice', 'video', 'video_note'])
+
+
 def get_media_messages(message):
     bot.send_message(message.from_user.id, "Started recognition...")
     try:
         bot.send_message(message.from_user.id, "Continue recognition...")
-        file_id = message.voice.file_id if message.content_type == 'voice' else message.video_note.file_id
+
+        if message.content_type == 'voice':
+            file_id = message.voice.file_id
+        elif message.content_type == 'video_note':
+            file_id = message.video_note.file_id
+        elif message.content_type == 'video':
+            file_id = message.video.file_id
+        else:
+            bot.send_message(message.from_user.id, 'Такой формат я не знаю😳')
+            return
+
+
         file_info = bot.get_file(file_id)
         path = file_info.file_path
         fname = os.path.basename(path)
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(token, file_info.file_path))
         with open(fname, 'wb') as f:
             f.write(doc.content)
-        subprocess.run(['ffmpeg', '-i', fname, fname[:-4] + '.wav'])
+
+
+        try:
+            subprocess.run(['ffmpeg', '-i', fname, fname[:-4] + '.wav'], check=True)
+        except subprocess.CalledProcessError as e:
+            bot.send_message(message.from_user.id,
+                             "c конвертацией файла что-то пошло не так... 😣")
+            os.remove(fname)
+            return
+
 
         model = whisper.load_model('small')
         bot.send_message(message.from_user.id, 'Model loaded')
 
-        result = model.transcribe(fname[:-4] + '.wav', fp16=False)
+        try:
+            result = model.transcribe(fname[:-4] + '.wav', fp16=False)  # распознаем аудио и переводим в текст
+        except Exception as e:
+           bot.send_message(message.from_user.id,"Что-то пошло не так c распознованием😣")
+           os.remove(fname)
+           os.remove(fname[:-4] + '.wav')
+           return
+
         bot.send_message(message.from_user.id, "Finish recognition...")
-        bot.send_message(message.from_user.id, result['text'])
+
+        if result['text'] == '':
+            bot.send_message(message.from_user.id,"Ничего не удалось распознать 😣")
+        else:
+            bot.send_message(message.from_user.id, result['text'])
+
     except Exception as e:
         bot.send_message(message.from_user.id,
-                         "Something went wrong, but our brave engineers are already working on a solution...")
+                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \n"
+                         "Something went wrong, but our brave engineers are already working on a solution... 😣")
+
     finally:
         os.remove(fname)
         os.remove(fname[:-4] + '.wav')
