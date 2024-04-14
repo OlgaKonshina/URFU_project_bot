@@ -17,30 +17,36 @@ timezone_common_name = config['timezone_common_name']
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение или видеосообщение в кружке!\nHi ✌️, send me a voice message or video-note!')
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение или видеосообщение в кружке или видео!\nHi ✌️, send me a voice message or video-note or video!')
 
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения или видео сообщения в кружке в текст\nБот создан в учебных '
-                                      'целях\n\nThis bot translates voice messages or video-note into text\nThe bot was created for'
+    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения или видео сообщения в кружке или видео в текст\nБот создан в учебных '
+                                      'целях\n\nThis bot translates voice messages or video-note or video into text\nThe bot was created for'
                                       ' educational purposes.')
 
 
 @bot.message_handler(
-    content_types=['audio', 'photo', 'video', 'document', 'text', 'location', 'contact', 'sticker'])
+    content_types=['audio', 'photo', 'document', 'text', 'location', 'contact', 'sticker'])
 def exceptions(message):
     bot.send_message(message.from_user.id,
                      "Ничего не понятно, но очень интересно!😳\nПопробуйте команду /help\n\nNothing is clear, "
                      "but it is very interesting!😳 \nTry the /help command😳")
 
 
-@bot.message_handler(content_types=['voice', 'video_note'])
+@bot.message_handler(content_types=['voice', 'video_note','video'])
 def get_media_messages(message):
     bot.send_message(message.from_user.id, "Started recognition...")
     try:
         bot.send_message(message.from_user.id, "Continue recognition...")
-        file_id = message.voice.file_id if message.content_type == 'voice' else message.video_note.file_id
+        file_id = ()
+        if message.content_type == 'voice':
+            file_id = (message.voice.file_id)
+        elif message.content_type == 'video':
+            file_id = (message.video.file_id)
+        else:
+            file_id =(message.video_note.file_id)
         file_info = bot.get_file(file_id)
         path = file_info.file_path
         fname = os.path.basename(path)
