@@ -27,6 +27,44 @@ def help_message(message):
                                       ' educational purposes.')
 
 
+@bot.message_handler(commands=['model'])
+
+
+@bot.message_handler(commands=['lang'])
+def help_message(message):
+    bot.send_message(message.chat.id, 'Бот понимает сообщения на многих языках,\nно пока не на всех\nВыберете язык\nBot can understand many languages\nChoose languages.')
+
+    keyboard = telebot.types.InlineKeyboardMarkup()
+    keyboard.row(
+        telebot.types.InlineKeyboardButton('Русский / Russian', callback_data='lang-rus')
+    )
+    keyboard.row(
+        telebot.types.InlineKeyboardButton('Английский / English', callback_data='lang-eng')
+    )
+    keyboard.row(
+        telebot.types.InlineKeyboardButton('Хинди / Hindi', callback_data='lang-hin')
+    )
+    bot.send_message(
+        message.chat.id,
+        'Выберите язык / Choose the language:',
+        reply_markup=keyboard
+    )
+
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_inline(call):
+    # Если сообщение из чата с ботом
+    if call.message:
+        if call.data == "lang-rus":
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Вы выбрали Русский язык сообщения")
+        elif call.data == "lang-eng":
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="You've chose English message language")
+        elif call.data == "lang-hin":
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="आपने अंग्रेजी संदेश भाषा चुनी है")
+        else:
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Я не знаю такой язык")
+
 @bot.message_handler(
     content_types=['audio', 'photo', 'video', 'document', 'text', 'location', 'contact', 'sticker'])
 def exceptions(message):

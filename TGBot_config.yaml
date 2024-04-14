@@ -1,8 +1,8 @@
 token:
- 'TOKEN'  # заменить на токен своего бота
+ '7104169014:AAGiZEwf7EXxQMToUHm8fLEX5Tvhb-UXv7g'  # заменить на токен своего бота
 
 user_id:
-  'USER_id' # заменить на название вашего бота
+  'user_id'
 
 timezone:
   'Europe/Moscow'
