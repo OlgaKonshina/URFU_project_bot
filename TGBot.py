@@ -17,13 +17,13 @@ timezone_common_name = config['timezone_common_name']
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!\nHi ✌️, send me a voice message!')
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение или видеосообщение в кружке!\nHi ✌️, send me a voice message or video-note!')
 
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения в текст\nБот создан в учебных '
-                                      'целях\n\nThis bot translates voice messages into text\nThe bot was created for'
+    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения или видео сообщения в кружке в текст\nБот создан в учебных '
+                                      'целях\n\nThis bot translates voice messages or video-note into text\nThe bot was created for'
                                       ' educational purposes.')
 
 
