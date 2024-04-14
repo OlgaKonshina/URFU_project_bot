@@ -6,6 +6,7 @@ import subprocess
 import pytz
 import yaml
 
+
 with open(r'TGBot_config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
@@ -43,26 +44,46 @@ def get_audio_messages(message):
         print('file_info = ', file_info)
         path = file_info.file_path  # Вот тут-то и полный путь до файла (например: voice/file_2.oga)
         fname = os.path.basename(path)  # Преобразуем путь в имя файла (например: file_2.oga)
-        # print(fname)
+        print(fname)
         doc = requests.get('https://api.telegram.org/file/bot{0}/{1}'.format(token,
                                                                              file_info.file_path))  # Получаем и сохраняем присланную голосовуху
         with open(fname + '.oga', 'wb') as f:
             f.write(doc.content)  # вот именно тут и сохраняется сама аудио-мессага
-        subprocess.run(['ffmpeg', '-i', fname + '.oga', fname + '.wav'])
+        #print(fname)
+
+        try:
+            subprocess.run(['ffmpeg', '-i', fname + '.oga', fname + '.wav'], check=True)
+        except subprocess.CalledProcessError as e:
+            bot.send_message(message.from_user.id,
+                             "c конвертацией файла что-то пошло не так... 😣")
+            os.remove(fname + '.oga')
+            return
+
         model = whisper.load_model('small')
         # print('model = ', model)
         bot.send_message(message.from_user.id, 'Загрузили модель\nLoaded the model')
-        result = model.transcribe(fname + '.wav', fp16=False)  # добавляем аудио для обработки
-        # print(result('text'))
+
+        try:
+            result = model.transcribe(fname + '.wav', fp16=False)  # распознаем аудио и переводим в текст
+        except Exception as e:
+           bot.send_message(message.from_user.id,
+                          "Что-то пошло не так c распознованием😣")
+           os.remove(fname + '.oga')
+           os.remove(fname + '.wav')
+           return
+
         bot.send_message(message.from_user.id, "Finish recognition...")
-        bot.send_message(message.from_user.id, result['text'])
 
-
-
+        if result['text'] == '':
+            bot.send_message(message.from_user.id,
+                             "Ничего не удалось распознать 😣")
+        else:
+            bot.send_message(message.from_user.id, result['text'])
 
     except Exception as e:
-        bot.send_message(message.from_user.id,
-                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \nSomething went wrong, but our brave engineers are already working on a solution... 😣")
+           bot.send_message(message.from_user.id,
+                          "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \nSomething went wrong, but our brave engineers are already working on a solution... 😣")
+
     finally:
         os.remove(fname + '.oga')
         os.remove(fname + '.wav')

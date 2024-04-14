@@ -1,8 +1,11 @@
 token:
- 'TOKEN'  # заменить на токен своего бота
+ '7104169014:AAGiZEwf7EXxQMToUHm8fLEX5Tvhb-UXv7g'  # заменить на токен своего бота
+# '7144514835:AAFYIPM7X3LVWOAkfgstQXg6C2RH3n5Dxws'  # для теста
 
 user_id:
-  'USER_id' # заменить на название вашего бота
+  'UrfuProjectBot' # заменить на название вашего бота
+  # 'URFU_vasili_Bot' # Для теста
+
 
 timezone:
   'Europe/Moscow'
