@@ -49,7 +49,7 @@ def get_media_messages(message):
         elif message.content_type == 'video':
             file_id = message.video.file_id
         else:
-            bot.send_message(message.from_user.id, 'Такой формат я не знаю...😳')
+            bot.send_message(message.from_user.id, 'Такой формат я не знаю😳')
             return
 
         file_info = bot.get_file(file_id)
