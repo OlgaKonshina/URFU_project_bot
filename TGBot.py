@@ -17,30 +17,41 @@ timezone_common_name = config['timezone_common_name']
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
-    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио сообщение!\nHi ✌️, send me a voice message!')
+    bot.send_message(message.chat.id, 'Привет ✌️ ,  отправь аудио/видео сообщение!\n'
+                                      'Hi ✌️, send me a voice/video message!')
 
 
 @bot.message_handler(commands=['help'])
 def help_message(message):
-    bot.send_message(message.chat.id, 'Этот бот переводит голосовые сообщения в текст\nБот создан в учебных '
-                                      'целях\n\nThis bot translates voice messages into text\nThe bot was created for'
-                                      ' educational purposes.')
+    bot.send_message(message.chat.id, 'Этот бот переводит голосовые/видео сообщения в текст\n'
+                                      'Бот создан в учебных целях\n\n'
+                                      'This bot translates voice/video messages into text\n'
+                                      'The bot was created for educational purposes')
 
 
 @bot.message_handler(
-    content_types=['audio', 'photo', 'video', 'document', 'text', 'location', 'contact', 'sticker'])
+    content_types=['audio', 'photo', 'document', 'text', 'location', 'contact', 'sticker'])
 def exceptions(message):
     bot.send_message(message.from_user.id,
-                     "Ничего не понятно, но очень интересно!😳\nПопробуйте команду /help\n\nNothing is clear, "
-                     "but it is very interesting!😳 \nTry the /help command😳")
+                     "Ничего не понятно, но очень интересно!😳\nПопробуйте команду /help😳\n\n"
+                     "Nothing is clear, but it is very interesting!😳 \nTry the /help command😳")
 
 
-@bot.message_handler(content_types=['voice', 'video_note'])
+@bot.message_handler(content_types=['voice', 'video', 'video_note'])
 def get_media_messages(message):
     bot.send_message(message.from_user.id, "Started recognition...")
     try:
         bot.send_message(message.from_user.id, "Continue recognition...")
-        file_id = message.voice.file_id if message.content_type == 'voice' else message.video_note.file_id
+        if message.content_type == 'voice':
+            file_id = message.voice.file_id
+        elif message.content_type == 'video_note':
+            file_id = message.video_note.file_id
+        elif message.content_type == 'video':
+            file_id = message.video.file_id
+        else:
+            bot.send_message(message.from_user.id, 'Такой формат я не знаю...')
+            return
+
         file_info = bot.get_file(file_id)
         path = file_info.file_path
         fname = os.path.basename(path)
@@ -76,7 +87,8 @@ def get_media_messages(message):
 
     except Exception as e:
         bot.send_message(message.from_user.id,
-                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \nySomething went wrong, but our brave engineers are already working on a solution... 😣")
+                         "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \n"
+                         "Something went wrong, but our brave engineers are already working on a solution... 😣")
     finally:
         os.remove(fname)
         os.remove(fname[:-4] + '.wav')
