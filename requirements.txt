@@ -1,5 +1,7 @@
-telebot==0.0.5
-whisper==1.1.10
-pytz==2024.1
-PyYAML==6.0.1
+openai-whisper
+ffmpeg
+telebot~=0.0.5
 requests~=2.31.0
+pytz~=2024.1
+whisper~=1.1.10
+PyYAML~=6.0.1

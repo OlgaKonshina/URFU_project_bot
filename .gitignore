@@ -1,1 +1,6 @@
 venv
+.idea
+*.iml
+**/*.iml
+**/.env
+logfile.log
