@@ -1,9 +1,9 @@
 token:
-  '6948303365:AAGKlyvBlEFYISnzsZQfbTApZOjKHXsVT_4'  # заменить на токен своего бота
+  'token'  # заменить на токен своего бота
 
 user_id:
 
-  'VoiceKatebot:' # заменить на название вашего бота
+  'user_id' # заменить на название вашего бота
 
 timezone:
   'Europe/Moscow'
