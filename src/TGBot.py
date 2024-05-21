@@ -12,13 +12,13 @@ logging.basicConfig(
     level=logging.INFO,
     filename="logfile.log",
     filemode="w",
-    encoding="utf-8",
+    encoding='utf-8',
     format="%(name)s %(asctime)s %(levelname)s %(message)s",
 )
 
 
 try:
-    with open(r"TGBot_config.yaml", "r") as f:
+    with open(r"src/TGBot_config.yaml", "r") as f:
         config = yaml.safe_load(f)
     logging.info("Конфигурационный файл успешно загружен.")
 except Exception as e:
@@ -48,7 +48,8 @@ def start_message(message):
         logging.info("Отправлено приветственное сообщение.")
     except Exception as e:
         logging.error(
-            f"Приветственное сообщение не отправлено. Ошибка: {e}", exc_info=True
+            f"Приветственное сообщение не отправлено. Ошибка: {e}",
+            exc_info=True
         )
 
 
@@ -252,7 +253,7 @@ def get_media_messages(message):
     except Exception as e:
         bot.send_message(
             message.from_user.id,
-            "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣  \n"
+            "Что-то пошло не так, но наши смелые инженеры уже трудятся над решением... 😣\n"
             "Something went wrong, but our brave engineers are already working on a solution... 😣",
         )
         logging.critical(f"Скрипт не отработал. Ошибка {e}", exc_info=True)

@@ -1,0 +1,12 @@
+token:
+  '6948303365:AAGKlyvBlEFYISnzsZQfbTApZOjKHXsVT_4'  # заменить на токен своего бота
+
+user_id:
+
+  'VoiceKatebot:' # заменить на название вашего бота
+
+timezone:
+  'Europe/Moscow'
+
+timezone_common_name:
+  'Moscow'
