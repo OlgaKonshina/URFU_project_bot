@@ -4,3 +4,7 @@ venv
 **/*.iml
 **/.env
 logfile.log
+src/TGBot_config.yaml
+__pycache__
+.pytest_cache
+*/__pycache__
