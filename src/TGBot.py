@@ -12,7 +12,7 @@ logging.basicConfig(
     level=logging.INFO,
     filename="logfile.log",
     filemode="w",
-    encoding='utf-8',
+    encoding="utf-8",
     format="%(name)s %(asctime)s %(levelname)s %(message)s",
 )
 
@@ -48,8 +48,7 @@ def start_message(message):
         logging.info("Отправлено приветственное сообщение.")
     except Exception as e:
         logging.error(
-            f"Приветственное сообщение не отправлено. Ошибка: {e}",
-            exc_info=True
+            f"Приветственное сообщение не отправлено. Ошибка: {e}", exc_info=True
         )
 
 
@@ -74,11 +73,12 @@ def help_message(message):
 
 @bot.message_handler(commands=["model"])
 @bot.message_handler(commands=["lang"])
-def help_message(message):
+def help_message_lang(message):
     try:
         bot.send_message(
             message.chat.id,
-            "Бот понимает сообщения на многих языках,\nно пока не на всех\nВыберете язык\nBot can understand many languages\nChoose languages.",
+            """Бот понимает сообщения на многих языках,\nно пока не на всех\n
+            Выберете язык\nBot can understand many languages\nChoose languages.""",
         )
 
         keyboard = telebot.types.InlineKeyboardMarkup()
@@ -165,8 +165,8 @@ def exceptions(message):
             "Nothing is clear, but it is very interesting!😳 \nTry the /help command😳",
         )
         logging.warning("Не удалось что-либо распознать")
-    except Exception as e:
-        logging.error("Неизвестная ошибка: {e}", exc_info=True)
+    except Exception:
+        logging.error("Неизвестная ошибка: {}", exc_info=True)
 
 
 @bot.message_handler(content_types=["voice", "video", "video_note"])
@@ -178,13 +178,13 @@ def get_media_messages(message):
 
         if message.content_type == "voice":
             file_id = message.voice.file_id
-            logging.info("Распознаём аудио сообщение")
+            logging.info("Распознаем аудио сообщение")
         elif message.content_type == "video_note":
             file_id = message.video_note.file_id
-            logging.info("Распознаем видеео сообщение")
+            logging.info("Распознаем видео сообщение")
         elif message.content_type == "video":
             file_id = message.video.file_id
-            logging.info("Распоознаем видео сообщние")
+            logging.info("Распознаем видео сообщение")
         else:
             bot.send_message(message.from_user.id, "Такой формат я не знаю😳")
             logging.error(
@@ -245,10 +245,10 @@ def get_media_messages(message):
 
         if result["text"] == "":
             bot.send_message(message.from_user.id, "Ничего не удалось распознать 😣")
-            logging.warning("Не удалось распознаттть текст")
+            logging.warning("Не удалось распознать текст")
         else:
             bot.send_message(message.from_user.id, result["text"])
-            logging.info("Сообщение распознано и переведенов текст")
+            logging.info("Сообщение распознано и переведено в текст")
 
     except Exception as e:
         bot.send_message(
